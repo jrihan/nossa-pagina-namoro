@@ -1,4 +1,70 @@
 body {
-    background-color: #f0f0f0;
-    font-family: sans-serif;
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #fff0f5;
+    color: #c70039;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .container {
+    z-index: 2;
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+  }
+  
+  .images img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin: 10px;
+    border: 3px solid #c70039;
+  }
+  
+  .text {
+    font-size: 1.2rem;
+    margin-top: 20px;
+  }
+  
+  #contador {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 10px 0;
+  }
+  
+  .footer {
+    font-size: 1.2rem;
+    margin-top: 20px;
+  }
+  
+  /* Corações animados no fundo */
+  .heart-background {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  
+  .heart-background::before,
+  .heart-background::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: ur
   }
