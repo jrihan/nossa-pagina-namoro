@@ -1,5 +1,4 @@
-// Altere para a data de início do namoro (ano, mês - 1, dia)
-const dataInicio = new Date(2025, 1, 23); // 15 de maio de 2022
+const dataInicio = new Date(2025, 1, 23); // 23 de fevereiro de 2025 (mês começa do zero)
 
 function atualizarContador() {
   const agora = new Date();
