@@ -130,6 +130,12 @@
       height: 100%;
       object-fit: cover;
       display: block;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .grid-item img.loaded {
+      opacity: 1;
     }
 
     .overlay {
@@ -211,6 +217,85 @@
       }
     }
 
+    /* Efeitos de Aniversário */
+    .effects-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 4;
+      overflow: hidden;
+    }
+
+    /* Confetes */
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #ff6b6b;
+      animation: confettiFall 3s linear infinite;
+    }
+
+    .confetti:nth-child(odd) {
+      background: #4ecdc4;
+    }
+
+    .confetti:nth-child(3n) {
+      background: #ffe66d;
+    }
+
+    .confetti:nth-child(4n) {
+      background: #ff6b9d;
+    }
+
+    .confetti:nth-child(5n) {
+      background: #c44569;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        top: -10px;
+        transform: rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        top: 110%;
+        transform: rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* Corações */
+    .heart-effect {
+      position: absolute;
+      font-size: 1.5rem;
+      color: #ff6b9d;
+      animation: heartFloat 4s ease-in-out infinite;
+      opacity: 0;
+    }
+
+    @keyframes heartFloat {
+      0% {
+        bottom: -30px;
+        opacity: 0;
+        transform: scale(0);
+      }
+      10% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        bottom: 110%;
+        opacity: 0;
+        transform: scale(0.5);
+      }
+    }
+
     @media (max-width: 768px) {
       .countdown-title {
         font-size: 1.8rem;
@@ -273,12 +358,17 @@
 
   <!-- Página de Aniversário -->
   <div id="birthday-container">
+    <audio id="background-music" loop>
+      <source src="assets/2025/invincible - feel it invincible.mp3" type="audio/mpeg">
+    </audio>
     <div class="background-slideshow" id="slideshow"></div>
     <div class="overlay"></div>
+    <div class="effects-container" id="effects-container"></div>
     <div class="birthday-content">
       <h1 class="birthday-title">🎉 Feliz Aniversário, Amor! 🎂</h1>
       <div class="birthday-text" id="birthday-message">
         Finalmente a mãe aos 14 ficou de maior ❤️. Feliz aniversário meu amor, já está preparada para as mensagens: “Já pode ser presa?”, Eu te amo muito! ❤️ e sou muito feliz ao seu lado. Parando pra lembrar, lembro algumas situação relacionada a sua idade que não vou comentar aqui no texto, vai que você queira postar 😂. Fico um pouco triste por não está fisicamente ao seu lado mas estou de mente e espirito ai, espero que a gente se encontre nos sonhos hoje para eu te dá um abraço apertado. Eu iria falar alguns momentos nossos mas vou deixar pra nosso 1 ano de namoro, nesse texto quero comemorar você! Guerreira, minha princesa TDAH, pituxinha que trás luz na vida de todos. 18 anos de vida amor, é tempo demais e ainda sim tempo de menos, mais ou menos 1/5 das nossas vidas. Eu queria ta com sua fotinha pequena que salvei no computador, esqueci de guardar. Mas fiz isso pra você, não sei editar vídeo nem compor musicas, mas é meu gesto de amor ❤️ e eu te amo muito.
+        Sabe como você me faz sentir? Invencível!
       </div>
     </div>
   </div>
@@ -344,9 +434,11 @@
     const countdownContainer = document.getElementById('countdown-container');
     const birthdayContainer = document.getElementById('birthday-container');
     const slideshow = document.getElementById('slideshow');
+    const effectsContainer = document.getElementById('effects-container');
 
     let slideshowInterval = null;
     let slideshowInitialized = false;
+    let effectsInterval = null;
 
     function updateCountdown() {
       const now = new Date();
@@ -372,10 +464,67 @@
     function showBirthdayPage() {
       countdownContainer.classList.add('hidden');
       birthdayContainer.classList.add('visible');
+      
+      // Tocar música de fundo
+      const backgroundMusic = document.getElementById('background-music');
+      if (backgroundMusic) {
+        backgroundMusic.volume = 0.5; // Volume em 50%
+        backgroundMusic.play().catch(error => {
+          console.log('Erro ao tocar música:', error);
+        });
+      }
+      
       if (!slideshowInitialized) {
         initSlideshow();
+        initEffects();
         slideshowInitialized = true;
       }
+    }
+
+    // Funções para efeitos visuais
+    function createConfetti() {
+      for (let i = 0; i < 5; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        confetti.style.animationDelay = Math.random() * 0.5 + 's';
+        confetti.style.width = (Math.random() * 8 + 6) + 'px';
+        confetti.style.height = (Math.random() * 8 + 6) + 'px';
+        effectsContainer.appendChild(confetti);
+        
+        setTimeout(() => {
+          confetti.remove();
+        }, 4000);
+      }
+    }
+
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'heart-effect';
+      heart.textContent = '❤️';
+      heart.style.left = Math.random() * 100 + '%';
+      heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+      heart.style.animationDelay = Math.random() * 0.3 + 's';
+      effectsContainer.appendChild(heart);
+      
+      setTimeout(() => {
+        heart.remove();
+      }, 5000);
+    }
+
+    function initEffects() {
+      // Criar efeitos iniciais
+      for (let i = 0; i < 10; i++) {
+        setTimeout(() => createConfetti(), i * 100);
+        setTimeout(() => createHeart(), i * 150);
+      }
+
+      // Continuar criando efeitos periodicamente
+      effectsInterval = setInterval(() => {
+        if (Math.random() > 0.5) createConfetti();
+        if (Math.random() > 0.6) createHeart();
+      }, 800);
     }
 
     function initSlideshow() {
@@ -408,32 +557,57 @@
         gridItems.forEach((gridItem, index) => {
           const img = gridItem.querySelector('img');
           if (img) {
-            img.src = `assets/2025/${shuffledImages[index % shuffledImages.length]}`;
-            img.alt = `Foto ${index + 1}`;
+            // Fade out
+            img.classList.remove('loaded');
+            
+            // Aguardar um pouco antes de trocar a imagem
+            setTimeout(() => {
+              img.src = `assets/2025/${shuffledImages[index % shuffledImages.length]}`;
+              img.alt = `Foto ${index + 1}`;
+              
+              // Fade in quando a imagem carregar
+              img.onload = function() {
+                img.classList.add('loaded');
+              };
+            }, 500);
           }
         });
       }
 
       // Carregar fotos iniciais
-      loadNewPhotos();
+      const gridItems = slideshow.querySelectorAll('.grid-item');
+      const shuffledImages = [...imageFiles].sort(() => Math.random() - 0.5);
+      gridItems.forEach((gridItem, index) => {
+        const img = gridItem.querySelector('img');
+        if (img) {
+          img.src = `assets/2025/${shuffledImages[index % shuffledImages.length]}`;
+          img.alt = `Foto ${index + 1}`;
+          img.onload = function() {
+            img.classList.add('loaded');
+          };
+        }
+      });
 
-      // Trocar todas as fotos a cada 1 segundo
+      // Trocar todas as fotos a cada 4 segundos
       if (slideshowInterval) {
         clearInterval(slideshowInterval);
       }
       slideshowInterval = setInterval(() => {
         loadNewPhotos();
-      }, 1000);
+      }, 4000);
     }
 
     // Verificar imediatamente e atualizar a cada segundo
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-    // Limpar intervalo quando a página for fechada
+    // Limpar intervalos quando a página for fechada
     window.addEventListener('beforeunload', () => {
       if (slideshowInterval) {
         clearInterval(slideshowInterval);
+      }
+      if (effectsInterval) {
+        clearInterval(effectsInterval);
       }
     });
   </script>
