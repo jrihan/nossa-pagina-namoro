@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Feliz Aniversário Vitória! 🎉</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      position: relative;
+    }
+
+    /* Contagem Regressiva */
+    #countdown-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      transition: opacity 0.5s ease-out;
+    }
+
+    #countdown-container.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .countdown-content {
+      text-align: center;
+      color: white;
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .countdown-title {
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    #countdown {
+      font-size: 3rem;
+      font-weight: bold;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .countdown-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 20px;
+      border-radius: 15px;
+      min-width: 120px;
+    }
+
+    .countdown-number {
+      font-size: 4rem;
+      line-height: 1;
+    }
+
+    .countdown-label {
+      font-size: 1rem;
+      margin-top: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    /* Página de Aniversário */
+    #birthday-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 1s ease-in;
+    }
+
+    #birthday-container.visible {
+      opacity: 1;
+    }
+
+    .background-slideshow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: repeat(5, 1fr);
+      gap: 2px;
+      overflow: hidden;
+    }
+
+    .grid-item {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      opacity: 1;
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    .grid-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 2;
+    }
+
+    .birthday-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 3;
+      text-align: center;
+      color: white;
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 30px;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      max-width: 800px;
+      width: 90%;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .birthday-title {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+      animation: fadeInUp 1s ease-out;
+      flex-shrink: 0;
+    }
+
+    .birthday-text {
+      font-size: 1.8rem;
+      line-height: 1.6;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      animation: fadeInUp 1.5s ease-out;
+      overflow-y: auto;
+      flex: 1;
+      padding-right: 10px;
+      text-align: left;
+    }
+
+    .birthday-text::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .birthday-text::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+
+    .birthday-text::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+    }
+
+    .birthday-text::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .countdown-title {
+        font-size: 1.8rem;
+      }
+
+      #countdown {
+        font-size: 2rem;
+      }
+
+      .countdown-number {
+        font-size: 2.5rem;
+      }
+
+      .countdown-unit {
+        min-width: 80px;
+        padding: 15px;
+      }
+
+      .birthday-content {
+        max-height: 80vh;
+        padding: 30px 20px;
+      }
+
+      .birthday-title {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+      }
+
+      .birthday-text {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Contagem Regressiva -->
+  <div id="countdown-container">
+    <div class="countdown-content">
+      <h1 class="countdown-title">🎂 Em Breve: Aniversário da Vitória! 🎉</h1>
+      <div id="countdown">
+        <div class="countdown-unit">
+          <div class="countdown-number" id="days">00</div>
+          <div class="countdown-label">Dias</div>
+        </div>
+        <div class="countdown-unit">
+          <div class="countdown-number" id="hours">00</div>
+          <div class="countdown-label">Horas</div>
+        </div>
+        <div class="countdown-unit">
+          <div class="countdown-number" id="minutes">00</div>
+          <div class="countdown-label">Minutos</div>
+        </div>
+        <div class="countdown-unit">
+          <div class="countdown-number" id="seconds">00</div>
+          <div class="countdown-label">Segundos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Página de Aniversário -->
+  <div id="birthday-container">
+    <div class="background-slideshow" id="slideshow"></div>
+    <div class="overlay"></div>
+    <div class="birthday-content">
+      <h1 class="birthday-title">🎉 Feliz Aniversário, Amor! 🎂</h1>
+      <div class="birthday-text" id="birthday-message">
+        Finalmente a mãe aos 14 ficou de maior ❤️. Feliz aniversário meu amor, já está preparada para as mensagens: “Já pode ser presa?”, Eu te amo muito! ❤️ e sou muito feliz ao seu lado. Parando pra lembrar, lembro algumas situação relacionada a sua idade que não vou comentar aqui no texto, vai que você queira postar 😂. Fico um pouco triste por não está fisicamente ao seu lado mas estou de mente e espirito ai, espero que a gente se encontre nos sonhos hoje para eu te dá um abraço apertado. Eu iria falar alguns momentos nossos mas vou deixar pra nosso 1 ano de namoro, nesse texto quero comemorar você! Guerreira, minha princesa TDAH, pituxinha que trás luz na vida de todos. 18 anos de vida amor, é tempo demais e ainda sim tempo de menos, mais ou menos 1/5 das nossas vidas. Eu queria ta com sua fotinha pequena que salvei no computador, esqueci de guardar. Mas fiz isso pra você, não sei editar vídeo nem compor musicas, mas é meu gesto de amor ❤️ e eu te amo muito.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Data alvo: 09/12/2025 às 00:00:00
+    const targetDate = new Date('2025-12-09T00:00:00');
+    
+    // Lista de imagens (excluindo .zip e .mov)
+    const imageFiles = [
+      '42061833-97DF-4CA0-B235-6B68813D064C.jpg',
+      '563B37D4-FD51-4AD9-8C52-B00C9F5C6508.jpg',
+      '57FA66CE-618A-472D-8BB4-A0C9E7E4D1C4.jpg',
+      '6BC2A4AD-BFB0-425D-A76C-82CB909ABF69.jpg',
+      '8AD5ED51-D8AE-4022-881B-CC7B62AE1A9F.jpg',
+      '8E7076FA-536E-4CF0-98AB-2C7EDB4712B3.jpg',
+      'AD2C5F46-F119-4D8D-8A23-E182AA837448.jpg',
+      'B3855672-CCEA-4D41-B609-4BB17BF5654C.jpg',
+      'C4559409-193A-4833-92C6-D7378F0F9C45.jpg',
+      'd36cb7c6-c5c2-4658-88c7-f9209da09ecb.jpg',
+      'd54cee24-878c-4464-a1be-b8bbd30436cd.jpg',
+      'E66508A7-993D-400E-9F2B-9C20EE91A8B8.jpg',
+      'E9DF5100-7FB2-4726-9A78-2372F08BD5D8.jpg',
+      'F8800A7F-C28D-469C-9B15-8D6B87A295FB.jpg',
+      'IMG_5931.jpg',
+      'IMG_6097.jpg',
+      'IMG_6128.jpg',
+      'IMG_6134.jpg',
+      'IMG_6137.jpg',
+      'IMG_6168.jpg',
+      'IMG_6171.jpg',
+      'IMG_6249.jpg',
+      'IMG_6278.jpg',
+      'IMG_6295.jpg',
+      'IMG_6383.jpg',
+      'IMG_6553.jpg',
+      'IMG_6576.JPG',
+      'IMG_6577.JPG',
+      'IMG_6627.jpg',
+      'IMG_6650.jpg',
+      'IMG_6667.jpg',
+      'IMG_6807.jpg',
+      'IMG_6821.jpg',
+      'IMG_6890.jpg',
+      'IMG_6893.jpg',
+      'IMG_6924.jpg',
+      'IMG_7207.jpg',
+      'IMG_7541.jpg',
+      'IMG_7742.jpg',
+      'IMG_7750.jpg',
+      'IMG_8261.jpg',
+      'IMG_8338.jpg',
+      'IMG_8443.jpg',
+      'IMG_8456.jpg',
+      'IMG_8457.jpg',
+      'IMG_8514.jpg',
+      'IMG_8516.jpg',
+      'IMG_8792.jpg',
+      'IMG_8811.jpg',
+      'IMG_9464.jpg'
+    ];
+
+    const countdownContainer = document.getElementById('countdown-container');
+    const birthdayContainer = document.getElementById('birthday-container');
+    const slideshow = document.getElementById('slideshow');
+
+    let slideshowInterval = null;
+    let slideshowInitialized = false;
+
+    function updateCountdown() {
+      const now = new Date();
+      const diff = targetDate - now;
+
+      if (diff <= 0) {
+        // Data chegou! Mostrar página de aniversário
+        showBirthdayPage();
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      document.getElementById('days').textContent = String(days).padStart(2, '0');
+      document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+      document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+      document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+    }
+
+    function showBirthdayPage() {
+      countdownContainer.classList.add('hidden');
+      birthdayContainer.classList.add('visible');
+      if (!slideshowInitialized) {
+        initSlideshow();
+        slideshowInitialized = true;
+      }
+    }
+
+    function initSlideshow() {
+      // Limpar o container antes de criar novos elementos
+      slideshow.innerHTML = '';
+      
+      const totalCells = 25; // Grid 5x5 fixo
+      
+      // Criar 25 células do grid
+      for (let i = 0; i < totalCells; i++) {
+        const gridItem = document.createElement('div');
+        gridItem.className = 'grid-item';
+        
+        const img = document.createElement('img');
+        gridItem.appendChild(img);
+        slideshow.appendChild(gridItem);
+      }
+
+      // Função para carregar novas fotos em todas as células
+      function loadNewPhotos() {
+        const gridItems = slideshow.querySelectorAll('.grid-item');
+        
+        // Verificar se temos exatamente 25 elementos
+        if (gridItems.length !== 25) {
+          return; // Não fazer nada se o grid não estiver correto
+        }
+        
+        const shuffledImages = [...imageFiles].sort(() => Math.random() - 0.5);
+        
+        gridItems.forEach((gridItem, index) => {
+          const img = gridItem.querySelector('img');
+          if (img) {
+            img.src = `assets/2025/${shuffledImages[index % shuffledImages.length]}`;
+            img.alt = `Foto ${index + 1}`;
+          }
+        });
+      }
+
+      // Carregar fotos iniciais
+      loadNewPhotos();
+
+      // Trocar todas as fotos a cada 1 segundo
+      if (slideshowInterval) {
+        clearInterval(slideshowInterval);
+      }
+      slideshowInterval = setInterval(() => {
+        loadNewPhotos();
+      }, 1000);
+    }
+
+    // Verificar imediatamente e atualizar a cada segundo
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // Limpar intervalo quando a página for fechada
+    window.addEventListener('beforeunload', () => {
+      if (slideshowInterval) {
+        clearInterval(slideshowInterval);
+      }
+    });
+  </script>
+</body>
+</html>
+
